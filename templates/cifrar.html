@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cifrar Mensaje - {{ usuario }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema Criptográfico RSA</h1>
+            <div class="user-info">
+                Usuario: <strong>{{ usuario }}</strong> | <a href="/logout">Cerrar sesión</a>
+            </div>
+        </header>
+        
+        <div class="card">
+            <h2>Cifrar Mensaje</h2>
+            
+            <div class="info-box">
+                <p>Este mensaje se cifrará usando la clave pública de <strong>{{ otro_usuario }}</strong>, 
+                   por lo tanto solamente <strong>{{ otro_usuario }}</strong> podrá descifrarlo.</p>
+            </div>
+            
+            <form action="/procesar_cifrado" method="post">
+                <div class="form-group">
+                    <label for="nombre_archivo">Nombre del archivo:</label>
+                    <input type="text" name="nombre_archivo" id="nombre_archivo" required 
+                           placeholder="Ejemplo: mensaje1">
+                </div>
+                
+                <div class="form-group">
+                    <label for="mensaje">Mensaje a cifrar:</label>
+                    <textarea name="mensaje" id="mensaje" rows="6" required 
+                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Cifrar Mensaje</button>
+                    <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>Proyecto de Matemática Discreta - Sistema RSA</p>
+    </footer>
+</body>
+</html>

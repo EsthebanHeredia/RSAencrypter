@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú RSA - {{ usuario }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema Criptográfico RSA</h1>
+            <div class="user-info">
+                Usuario: <strong>{{ usuario }}</strong> | <a href="/logout">Cerrar sesión</a>
+            </div>
+        </header>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card">
+            <h2>Menú principal</h2>
+            
+            <div class="menu-options">
+                <div class="option">
+                    <a href="/generar_claves" class="btn-option {% if tiene_claves %}btn-disabled{% endif %}">
+                        1. Generar claves RSA
+                    </a>
+                    {% if tiene_claves %}
+                        <span class="badge">Claves ya generadas</span>
+                    {% endif %}
+                </div>
+                
+                <div class="option">
+                    <a href="/cifrar" class="btn-option {% if not otro_tiene_claves %}btn-disabled{% endif %}">
+                        2. Cifrar mensaje
+                    </a>
+                    <span class="note">Usa clave pública de {{ otro_usuario }}</span>
+                    {% if not otro_tiene_claves %}
+                        <span class="badge warning">{{ otro_usuario }} aún no tiene claves</span>
+                    {% endif %}
+                </div>
+                
+                <div class="option">
+                    <a href="/descifrar" class="btn-option {% if not tiene_claves %}btn-disabled{% endif %}">
+                        3. Descifrar mensaje
+                    </a>
+                    <span class="note">Usa tu clave privada</span>
+                    {% if not tiene_claves %}
+                        <span class="badge warning">Debes generar claves primero</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>Proyecto de Matemática Discreta - Sistema RSA</p>
+    </footer>
+</body>
+</html>

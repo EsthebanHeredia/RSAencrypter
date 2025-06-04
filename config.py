@@ -1,25 +1,23 @@
 # Configuración de directorios
 import os
 
-# Directorio base (donde se encuentra este archivo)
+# Directorio base
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Directorios para almacenar claves y mensajes
 KEYS_DIR = os.path.join(BASE_DIR, "claves")
 MESSAGES_DIR = os.path.join(BASE_DIR, "mensajes")
 
-# Creamos los directorios si no existen
 os.makedirs(KEYS_DIR, exist_ok=True)
 os.makedirs(MESSAGES_DIR, exist_ok=True)
 
-# Usuarios válidos en el sistema
+# Usuarios
 USERS = ["USUARIO_A", "USUARIO_B"]
 
 # Configuración RSA
-# Tamaño de los números primos - valores pequeños para facilitar la comprensión
-# En un sistema real serían mucho más grandes
+# Tamaño de los números primos 
 PRIME_MIN = 100
-PRIME_MAX = 500
+PRIME_MAX = 1000
 
 # Funciones auxiliares para obtener rutas de archivos de claves
 def get_private_key_path(user):

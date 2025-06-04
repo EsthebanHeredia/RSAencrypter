@@ -1,0 +1,46 @@
+# Entorno virtual
+venv/
+env/
+.env/
+
+# Carpetas generadas durante la ejecución
+claves/
+mensajes/
+
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Archivos de distribución/empaquetado
+dist/
+build/
+*.egg-info/
+
+# Archivos de caché de Flask
+instance/
+.webassets-cache
+
+# Archivos del sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Archivos de entorno específicos
+.env
+.flaskenv
+
+# Archivos de IDE/editores
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject

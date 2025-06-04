@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generar Claves RSA - {{ usuario }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema Criptográfico RSA</h1>
+            <div class="user-info">
+                Usuario: <strong>{{ usuario }}</strong> | <a href="/logout">Cerrar sesión</a>
+            </div>
+        </header>
+        
+        <div class="card">
+            <h2>Generación de Claves RSA</h2>
+            
+            <div class="info-box">
+                <h3>¿Qué ocurrirá al generar claves?</h3>
+                <ul>
+                    <li>Se generarán dos números primos aleatorios p y q</li>
+                    <li>Se calculará n = p * q (módulo de cifrado)</li>
+                    <li>Se calculará φ(n) = (p-1) * (q-1) (función de Euler)</li>
+                    <li>Se elegirá un exponente e coprimo con φ(n)</li>
+                    <li>Se calculará d = e^(-1) mod φ(n) (inverso multiplicativo de e módulo φ(n))</li>
+                    <li>Tu clave pública será (n, e)</li>
+                    <li>Tu clave privada será (n, d)</li>
+                </ul>
+            </div>
+            
+            <form action="/procesar_generacion" method="post">
+                <div class="form-buttons">
+                    <button type="submit" class="btn">Generar Claves</button>
+                    <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>Proyecto de Matemática Discreta - Sistema RSA</p>
+    </footer>
+</body>
+</html>

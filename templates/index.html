@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema RSA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema Criptográfico RSA</h1>
+        <div class="card">
+            <h2>Seleccione su usuario</h2>
+            
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert">
+                        {% for message in messages %}
+                            <p>{{ message }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="usuario">Usuario:</label>
+                    <select name="usuario" id="usuario" required>
+                        <option value="" selected disabled>-- Seleccione usuario --</option>
+                        <option value="USUARIO_A">Usuario A</option>
+                        <option value="USUARIO_B">Usuario B</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Ingresar</button>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>Proyecto de Matemática Discreta - Sistema RSA</p>
+    </footer>
+</body>
+</html>

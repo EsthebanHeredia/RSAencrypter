@@ -47,9 +47,9 @@ def menu():
     otro_usuario = USERS[1] if usuario == USERS[0] else USERS[0]
     
     # Verificamos si el usuario tiene claves generadas
-    tiene_claves = os.path.exists(get_private_key_path(usuario))
+    tiene_claves = os.path.exists(os.path.join(KEYS_DIR, f"{usuario}_private.key"))
     # Verificamos si el otro usuario tiene clave pública (necesaria para cifrar)
-    otro_tiene_claves = os.path.exists(get_public_key_path(otro_usuario))
+    otro_tiene_claves = os.path.exists(os.path.join(KEYS_DIR, f"{otro_usuario}_public.key"))
     
     return render_template('menu.html', 
                           usuario=usuario, 
