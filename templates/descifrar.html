@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descifrar Mensaje - {{ usuario }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/tabs.js') }}"></script>
 </head>
 <body>
     <div class="container">
@@ -18,35 +19,69 @@
         <div class="card">
             <h2>Descifrar Mensaje</h2>
             
-            <div class="info-box">
-                <p>Selecciona un mensaje cifrado para descifrarlo con tu clave privada.</p>
+            <ul class="tabs">
+                <li class="tab active" onclick="switchTab('from-file')">Desde archivo</li>
+                <li class="tab" onclick="switchTab('from-text')">Ingreso directo</li>
+            </ul>
+            
+            <div class="tab-content active" id="from-file">
+                <div class="info-box">
+                    <p>Selecciona un mensaje cifrado para descifrarlo con tu clave privada.</p>
+                </div>
+                
+                {% if archivos %}
+                    <form action="/procesar_descifrado" method="post">
+                        <input type="hidden" name="metodo" value="archivo">
+                        <div class="form-group">
+                            <label for="archivo">Selecciona un archivo:</label>
+                            <select name="archivo" id="archivo" required>
+                                <option value="" selected disabled>-- Seleccione un archivo cifrado --</option>
+                                {% for archivo in archivos %}
+                                    <option value="{{ archivo }}">{{ archivo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-buttons">
+                            <button type="submit" class="btn">Descifrar Mensaje</button>
+                            <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
+                        </div>
+                    </form>
+                {% else %}
+                    <div class="empty-state">
+                        <p>No hay mensajes cifrados disponibles en el sistema.</p>
+                    </div>
+                {% endif %}
             </div>
             
-            {% if archivos %}
+            <div class="tab-content" id="from-text">
+                <div class="info-box">
+                    <p>Ingresa directamente el texto cifrado para descifrarlo con tu clave privada.</p>
+                </div>
+                
                 <form action="/procesar_descifrado" method="post">
+                    <input type="hidden" name="metodo" value="texto">
                     <div class="form-group">
-                        <label for="archivo">Selecciona un archivo:</label>
-                        <select name="archivo" id="archivo" required>
-                            <option value="" selected disabled>-- Seleccione un archivo cifrado --</option>
-                            {% for archivo in archivos %}
-                                <option value="{{ archivo }}">{{ archivo }}</option>
-                            {% endfor %}
-                        </select>
+                        <label for="texto_cifrado">Texto cifrado:</label>
+                        <textarea name="texto_cifrado" id="texto_cifrado" rows="6" required 
+                                  placeholder="Pega aquí el texto cifrado (formato JSON)..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="nombre_archivo">Nombre para guardar (opcional):</label>
+                        <input type="text" name="nombre_archivo" id="nombre_archivo" 
+                               placeholder="Ejemplo: mensaje1">
                     </div>
                     
                     <div class="form-buttons">
-                        <button type="submit" class="btn">Descifrar Mensaje</button>
+                        <button type="submit" class="btn">Descifrar Texto</button>
                         <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
                     </div>
                 </form>
-            {% else %}
-                <div class="empty-state">
-                    <p>No hay mensajes cifrados disponibles para descifrar.</p>
-                    <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
-                </div>
-            {% endif %}
+            </div>
         </div>
     </div>
+    
     <footer>
         <p>Proyecto de Matemática Discreta - Sistema RSA</p>
     </footer>

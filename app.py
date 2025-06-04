@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
+import time
 from rsa_utils import generar_claves_rsa, cifrar_mensaje, descifrar_mensaje, guardar_mensaje
 from config import USER_CREDENTIALS, USERS, KEYS_DIR, MESSAGES_DIR
 
@@ -173,43 +174,52 @@ def descifrar():
 def procesar_descifrado():
     """
     Procesa el descifrado de un mensaje y lo muestra en pantalla.
+    Puede recibir el mensaje desde un archivo o directamente como texto.
     """
     if 'usuario' not in session:
         return redirect(url_for('index'))
     
     usuario = session['usuario']
-    archivo = request.form.get('archivo')
+    metodo = request.form.get('metodo', 'archivo')
     
     try:
-        # Ruta completa al archivo cifrado
-        ruta_archivo = os.path.join(MESSAGES_DIR, archivo)
-        
-        # Extraemos el nombre base del archivo
-        nombre_archivo = os.path.splitext(archivo)[0].replace('_cifrado', '')
-        
-        # Leemos el mensaje cifrado del archivo
-        with open(ruta_archivo, 'r') as f:
-            mensaje_cifrado = f.read()
+        # Determinamos la fuente del texto cifrado
+        if metodo == 'archivo':
+            archivo = request.form.get('archivo')
+            nombre_archivo = os.path.splitext(archivo)[0].replace('_cifrado', '')
+            
+            # Leemos el mensaje cifrado del archivo
+            with open(os.path.join(MESSAGES_DIR, archivo), 'r') as f:
+                mensaje_cifrado = f.read()
+                
+            fuente = f"archivo: {archivo}"
+        else:  # metodo == 'texto'
+            mensaje_cifrado = request.form.get('texto_cifrado')
+            nombre_archivo = request.form.get('nombre_archivo', f"mensaje_directo_{int(time.time())}")
+            fuente = "entrada directa de texto"
         
         # Desciframos el mensaje usando la clave privada del usuario
         mensaje_descifrado = descifrar_mensaje(mensaje_cifrado, usuario)
         
         if mensaje_descifrado:
-            # Guardamos el mensaje descifrado en un nuevo archivo
-            ruta_guardado = guardar_mensaje(mensaje_descifrado, nombre_archivo, cifrado=False)
+            # Guardamos el mensaje descifrado en un nuevo archivo solo si se proporciona un nombre
+            if nombre_archivo:
+                ruta_guardado = guardar_mensaje(mensaje_descifrado, nombre_archivo, cifrado=False)
+            else:
+                ruta_guardado = "No guardado (no se proporcionó nombre)"
             
             # Mostramos el resultado en una página específica
             return render_template('resultado_descifrado.html',
                                   usuario=usuario,
                                   mensaje_cifrado=mensaje_cifrado,
                                   mensaje_descifrado=mensaje_descifrado,
-                                  nombre_archivo=archivo,
+                                  nombre_archivo=fuente,
                                   ruta_guardado=ruta_guardado)
         else:
-            flash('Error al descifrar el mensaje. Es posible que no tengas la clave privada correcta.')
+            flash('Error al descifrar el mensaje. Es posible que no tengas la clave privada correcta o el formato sea incorrecto.')
             return redirect(url_for('descifrar'))
     except Exception as e:
-        flash(f'Error: {str(e)}')
+        flash(f'Error al descifrar: {str(e)}')
         return redirect(url_for('descifrar'))
 
 @app.route('/logout')

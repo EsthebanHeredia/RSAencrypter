@@ -215,7 +215,7 @@ footer {
         width: 100%;
     }
 }
-/* Version 2.0 styles */
+/* Version 1.2 styles */
 
 .warning-box {
     background-color: #fff3cd;
@@ -258,4 +258,40 @@ footer {
     font-style: italic;
     margin: 15px 0;
     color: #6c757d;
+}
+
+/* Version 1.3 styles */
+
+/* Estilos para pestañas */
+.tabs {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.tab.active {
+    border-bottom: 2px solid var(--primary-color);
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.tab:hover {
+    background-color: #f8f9fa;
+}
+
+.tab-content {
+    display: none;
+    padding: 15px 0;
+}
+
+.tab-content.active {
+    display: block;
 }
