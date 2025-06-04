@@ -18,6 +18,13 @@
         <div class="card">
             <h2>Generación de Claves RSA</h2>
             
+            {% if tiene_claves %}
+            <div class="warning-box">
+                <h3>¡Atención! Ya tienes claves generadas</h3>
+                <p>Si regeneras tus claves, no podrás descifrar los mensajes que te fueron enviados anteriormente.</p>
+            </div>
+            {% endif %}
+            
             <div class="info-box">
                 <h3>¿Qué ocurrirá al generar claves?</h3>
                 <ul>
@@ -33,7 +40,7 @@
             
             <form action="/procesar_generacion" method="post">
                 <div class="form-buttons">
-                    <button type="submit" class="btn">Generar Claves</button>
+                    <button type="submit" class="btn">{% if tiene_claves %}Regenerar Claves{% else %}Generar Claves{% endif %}</button>
                     <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
                 </div>
             </form>

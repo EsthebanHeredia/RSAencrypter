@@ -215,3 +215,47 @@ footer {
         width: 100%;
     }
 }
+/* Version 2.0 styles */
+
+.warning-box {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.result-box {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+}
+
+.message-box {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    margin: 10px 0 20px;
+    border-radius: var(--border-radius);
+    max-height: 150px;
+    overflow-y: auto;
+    word-break: break-all;
+    font-family: monospace;
+}
+
+.message-box.encrypted {
+    background-color: #f8f9fa;
+}
+
+.message-box.decrypted {
+    background-color: #e9f7ef;
+}
+
+.info-text {
+    font-style: italic;
+    margin: 15px 0;
+    color: #6c757d;
+}

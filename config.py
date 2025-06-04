@@ -11,8 +11,12 @@ MESSAGES_DIR = os.path.join(BASE_DIR, "mensajes")
 os.makedirs(KEYS_DIR, exist_ok=True)
 os.makedirs(MESSAGES_DIR, exist_ok=True)
 
-# Usuarios
-USERS = ["USUARIO_A", "USUARIO_B"]
+# Usuarios y contraseñas
+USER_CREDENTIALS = {
+    "USUARIO_A": "passwordA",
+    "USUARIO_B": "passwordB"
+}
+USERS = list(USER_CREDENTIALS.keys())
 
 # Configuración RSA
 # Tamaño de los números primos 

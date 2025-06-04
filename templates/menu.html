@@ -30,8 +30,8 @@
             
             <div class="menu-options">
                 <div class="option">
-                    <a href="/generar_claves" class="btn-option {% if tiene_claves %}btn-disabled{% endif %}">
-                        1. Generar claves RSA
+                    <a href="/generar_claves" class="btn-option">
+                        1. {% if tiene_claves %}Regenerar{% else %}Generar{% endif %} claves RSA
                     </a>
                     {% if tiene_claves %}
                         <span class="badge">Claves ya generadas</span>

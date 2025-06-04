@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 import os
 from rsa_utils import generar_claves_rsa, cifrar_mensaje, descifrar_mensaje, guardar_mensaje
-from config import USERS, KEYS_DIR, MESSAGES_DIR
+from config import USER_CREDENTIALS, USERS, KEYS_DIR, MESSAGES_DIR
 
 app = Flask(__name__)
 # Clave secreta para las sesiones de Flask (protege las cookies)
@@ -19,17 +19,19 @@ def index():
 def login():
     """
     Procesa el formulario de inicio de sesión.
-    Verifica si el usuario seleccionado es válido y lo guarda en la sesión.
+    Verifica si el usuario y contraseña son válidos.
     """
     usuario = request.form.get('usuario')
-    # Verificamos que el usuario esté en nuestra lista de usuarios permitidos
-    if usuario in USERS:
+    password = request.form.get('password')
+    
+    # Verificamos que el usuario esté en nuestra lista y la contraseña sea correcta
+    if usuario in USERS and USER_CREDENTIALS[usuario] == password:
         # Guardamos el usuario en la sesión
         session['usuario'] = usuario
         return redirect(url_for('menu'))
     else:
-        # Si el usuario no es válido, mostramos un mensaje de error
-        flash('Usuario no válido')
+        # Si el usuario o contraseña no son válidos, mostramos mensaje de error
+        flash('Usuario o contraseña incorrectos')
         return redirect(url_for('index'))
 
 @app.route('/menu')
@@ -66,7 +68,10 @@ def generar_claves():
     if 'usuario' not in session:
         return redirect(url_for('index'))
     
-    return render_template('generar.html', usuario=session['usuario'])
+    usuario = session['usuario']
+    tiene_claves = os.path.exists(os.path.join(KEYS_DIR, f"{usuario}_private.key"))
+    
+    return render_template('generar.html', usuario=usuario, tiene_claves=tiene_claves)
 
 @app.route('/procesar_generacion', methods=['POST'])
 def procesar_generacion():
@@ -80,6 +85,15 @@ def procesar_generacion():
     usuario = session['usuario']
     
     try:
+        # Verificamos si hay que eliminar claves antiguas
+        private_key_path = os.path.join(KEYS_DIR, f"{usuario}_private.key")
+        public_key_path = os.path.join(KEYS_DIR, f"{usuario}_public.key")
+        
+        if os.path.exists(private_key_path):
+            os.remove(private_key_path)
+        if os.path.exists(public_key_path):
+            os.remove(public_key_path)
+        
         # Llamamos a la función que genera y guarda las claves
         if generar_claves_rsa(usuario):
             flash('Claves generadas con éxito')
@@ -109,9 +123,7 @@ def cifrar():
 @app.route('/procesar_cifrado', methods=['POST'])
 def procesar_cifrado():
     """
-    Procesa el cifrado de un mensaje.
-    Toma el mensaje del formulario, lo cifra con la clave pública del destinatario
-    y guarda el resultado en un archivo.
+    Procesa el cifrado de un mensaje y lo muestra en pantalla.
     """
     if 'usuario' not in session:
         return redirect(url_for('index'))
@@ -127,19 +139,25 @@ def procesar_cifrado():
         if mensaje_cifrado:
             # Guardamos el mensaje cifrado en un archivo
             ruta_guardado = guardar_mensaje(mensaje_cifrado, nombre_archivo, cifrado=True)
-            flash(f'Mensaje cifrado y guardado en {ruta_guardado}')
+            
+            # Mostramos el resultado en una página específica
+            return render_template('resultado_cifrado.html',
+                                  usuario=usuario,
+                                  mensaje_original=mensaje,
+                                  mensaje_cifrado=mensaje_cifrado,
+                                  destinatario=otro_usuario,
+                                  ruta_guardado=ruta_guardado)
         else:
             flash('Error al cifrar el mensaje')
+            return redirect(url_for('cifrar'))
     except Exception as e:
         flash(f'Error: {str(e)}')
-    
-    return redirect(url_for('menu'))
+        return redirect(url_for('cifrar'))
 
 @app.route('/descifrar')
 def descifrar():
     """
     Muestra la página para descifrar mensajes.
-    Muestra una lista de archivos cifrados disponibles para que el usuario seleccione.
     """
     if 'usuario' not in session:
         return redirect(url_for('index'))
@@ -154,21 +172,23 @@ def descifrar():
 @app.route('/procesar_descifrado', methods=['POST'])
 def procesar_descifrado():
     """
-    Procesa el descifrado de un mensaje.
-    Lee el archivo seleccionado, descifra su contenido usando la clave privada
-    del usuario y guarda el resultado en un nuevo archivo.
+    Procesa el descifrado de un mensaje y lo muestra en pantalla.
     """
     if 'usuario' not in session:
         return redirect(url_for('index'))
     
     usuario = session['usuario']
     archivo = request.form.get('archivo')
-    # Extraemos el nombre base del archivo para usar al guardar el descifrado
-    nombre_archivo = os.path.splitext(archivo)[0].replace('_cifrado', '')
     
     try:
+        # Ruta completa al archivo cifrado
+        ruta_archivo = os.path.join(MESSAGES_DIR, archivo)
+        
+        # Extraemos el nombre base del archivo
+        nombre_archivo = os.path.splitext(archivo)[0].replace('_cifrado', '')
+        
         # Leemos el mensaje cifrado del archivo
-        with open(os.path.join(MESSAGES_DIR, archivo), 'r') as f:
+        with open(ruta_archivo, 'r') as f:
             mensaje_cifrado = f.read()
         
         # Desciframos el mensaje usando la clave privada del usuario
@@ -177,13 +197,20 @@ def procesar_descifrado():
         if mensaje_descifrado:
             # Guardamos el mensaje descifrado en un nuevo archivo
             ruta_guardado = guardar_mensaje(mensaje_descifrado, nombre_archivo, cifrado=False)
-            flash(f'Mensaje descifrado y guardado en {ruta_guardado}')
+            
+            # Mostramos el resultado en una página específica
+            return render_template('resultado_descifrado.html',
+                                  usuario=usuario,
+                                  mensaje_cifrado=mensaje_cifrado,
+                                  mensaje_descifrado=mensaje_descifrado,
+                                  nombre_archivo=archivo,
+                                  ruta_guardado=ruta_guardado)
         else:
-            flash('Error al descifrar el mensaje')
+            flash('Error al descifrar el mensaje. Es posible que no tengas la clave privada correcta.')
+            return redirect(url_for('descifrar'))
     except Exception as e:
         flash(f'Error: {str(e)}')
-    
-    return redirect(url_for('menu'))
+        return redirect(url_for('descifrar'))
 
 @app.route('/logout')
 def logout():

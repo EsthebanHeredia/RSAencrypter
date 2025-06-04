@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensaje Descifrado - {{ usuario }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema Criptográfico RSA</h1>
+            <div class="user-info">
+                Usuario: <strong>{{ usuario }}</strong> | <a href="/logout">Cerrar sesión</a>
+            </div>
+        </header>
+        
+        <div class="card">
+            <h2>Mensaje Descifrado con Éxito</h2>
+            
+            <div class="result-box">
+                <h3>Información del proceso</h3>
+                <p><strong>Archivo cifrado:</strong> {{ nombre_archivo }}</p>
+                
+                <p><strong>Mensaje cifrado:</strong></p>
+                <div class="message-box encrypted">{{ mensaje_cifrado }}</div>
+                
+                <p><strong>Mensaje descifrado:</strong></p>
+                <div class="message-box decrypted">{{ mensaje_descifrado }}</div>
+                
+                <p><strong>Guardado en:</strong> {{ ruta_guardado }}</p>
+            </div>
+            
+            <div class="form-buttons">
+                <a href="/descifrar" class="btn">Descifrar otro mensaje</a>
+                <a href="/menu" class="btn btn-secondary">Volver al Menú</a>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <p>Proyecto de Matemática Discreta - Sistema RSA</p>
+    </footer>
+</body>
+</html>
