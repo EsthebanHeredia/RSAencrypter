@@ -13,8 +13,8 @@ os.makedirs(MESSAGES_DIR, exist_ok=True)
 
 # Usuarios y contraseñas
 USER_CREDENTIALS = {
-    "USUARIO_A": "passwordA",
-    "USUARIO_B": "passwordB"
+    "BOB": "passwordBOB",
+    "ALICE": "passwordALICE"
 }
 USERS = list(USER_CREDENTIALS.keys())
 

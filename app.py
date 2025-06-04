@@ -5,7 +5,7 @@ from rsa_utils import generar_claves_rsa, cifrar_mensaje, descifrar_mensaje, gua
 from config import USER_CREDENTIALS, USERS, KEYS_DIR, MESSAGES_DIR
 
 app = Flask(__name__)
-# Clave secreta para las sesiones de Flask (protege las cookies)
+# Clave secreta para las sesiones de Flask
 app.secret_key = os.urandom(24)
 
 @app.route('/')
