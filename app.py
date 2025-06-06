@@ -46,7 +46,6 @@ def menu():
         return redirect(url_for('index'))
     
     usuario = session['usuario']
-    # Determinamos quién es el otro usuario del sistema
     otro_usuario = USERS[1] if usuario == USERS[0] else USERS[0]
     
     # Verificamos si el usuario tiene claves generadas
@@ -65,7 +64,6 @@ def generar_claves():
     """
     Muestra la página para generar claves RSA.
     """
-    # Verificación de seguridad: debe haber un usuario en sesión
     if 'usuario' not in session:
         return redirect(url_for('index'))
     
@@ -141,7 +139,6 @@ def procesar_cifrado():
             # Guardamos el mensaje cifrado en un archivo
             ruta_guardado = guardar_mensaje(mensaje_cifrado, nombre_archivo, cifrado=True)
             
-            # Mostramos el resultado en una página específica
             return render_template('resultado_cifrado.html',
                                   usuario=usuario,
                                   mensaje_original=mensaje,

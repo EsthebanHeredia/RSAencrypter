@@ -4,10 +4,6 @@ import json
 from config import get_private_key_path, get_public_key_path, PRIME_MIN, PRIME_MAX
 
 def es_primo(n):
-    """
-    Verifica si un número es primo usando la criba de Eratóstenes.
-    Un número primo es aquel que solo es divisible por 1 y por sí mismo.
-    """
     # Casos base
     if n <= 1:
         return False
@@ -16,11 +12,10 @@ def es_primo(n):
     if n % 2 == 0 or n % 3 == 0:
         return False
     
-    # Para números grandes, usamos la criba hasta su raíz cuadrada
+    # Aqui se usa la criba de eratóstenes para verificar la primalidad
     k = math.isqrt(n)
     
     # Generamos los números primos hasta k usando la criba de Eratóstenes
-    # Inicializamos un array booleano donde True significa "es primo"
     es_primo_array = [True] * (k + 1)
     es_primo_array[0] = es_primo_array[1] = False  # 0 y 1 no son primos
     
@@ -41,7 +36,6 @@ def es_primo(n):
 def generar_primo(min_val=PRIME_MIN, max_val=PRIME_MAX):
     """
     Genera un número primo aleatorio entre min_val y max_val.
-    Usa el método simple de generar un número y verificar si es primo.
     """
     p = random.randint(min_val, max_val)
     while not es_primo(p):
@@ -147,8 +141,6 @@ def potencia_modular(base, exponente, modulo):
     """
     Calcula (base^exponente) % modulo de manera tradicional.
     Usa multiplicaciones sucesivas para calcular el resultado.
-    Nota: Este método es menos eficiente que la exponenciación binaria
-    para exponentes grandes, pero es más simple de entender.
     """
     resultado = 1
     for _ in range(exponente):
